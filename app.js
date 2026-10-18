@@ -95,29 +95,14 @@ app.use((req, res, next) => {
     next();
 });
 
-// app.use((req, res, next) => {
-//     console.log("Current URL:", req.originalUrl);
-//     console.log("Logged in user:", req.user ? req.user.username : "Not logged in");
-
-//     res.locals.success = req.flash("success");
-//     res.locals.error = req.flash("error");
-//     res.locals.currUser = req.user || null;
-
-//     next();
-// });
-
-// app.get("/demoUser", async(req, res) => {
-//     let fakeUser = new User({
-//         email: "student@gmail.com",
-//         username: "delta-student"
-//     });
-//     let registerUser = await User.register(fakeUser, "helloworld");
-//     res.send(registerUser);
-// });
 
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
+
+app.get("/", (req, res) => {
+    res.redirect("listings");
+});
 
 app.all("/{*splat}", (req, res, next) => {
     next(new ExpressError(404, "Page Not Found!"));
@@ -126,7 +111,6 @@ app.all("/{*splat}", (req, res, next) => {
 app.use((err, req, res, next) => {
     let { statusCode = 500, message = "Something went wrong!" } = err;
     res.status(statusCode).render("error.ejs", { message });
-    //res.status(statusCode).send(message);
 });
 
 app.listen(8080, () => {
