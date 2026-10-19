@@ -1,3 +1,9 @@
+require("dotenv").config({
+    path: require("path").resolve(__dirname, "../.env")
+});
+
+require("dns").setServers(["8.8.8.8", "1.1.1.1"]);
+
 const mongoose = require("mongoose");
 const initData = require("./data.js");
 const Listing = require("../models/listing.js");
@@ -12,11 +18,14 @@ main()
         console.log(err);
     });
 async function main() {
-    await mongoose.connect(MONGO_URL);
+    await mongoose.connect(MONGO_URL, {
+        serverSelectionTimeoutMS: 10000
+    });
+    console.log("Connected to DB");
 };
 
 const initDB = async() => {
-    await Listing.deleteMany({});
+    // await Listing.deleteMany({});
     initData.data = initData.data.map((obj) => ({
         ...obj,
         owner: "6ab16c9e0c3c7df20e6064a1",
